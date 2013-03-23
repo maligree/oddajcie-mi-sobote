@@ -51,7 +51,7 @@ class Monster
   end
 
   def hp_percent
-    hitpoints.to_f / starting_hitpoints.to_f
+    (hitpoints.to_f / starting_hitpoints.to_f).round(2)
   end
 
   def try_to_spawn_a_minion

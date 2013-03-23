@@ -2,8 +2,8 @@ class Killcount
   attr_accessor :x, :y
 
   def initialize
-    @x = 110
-    @y = 10
+    @x = 120
+    @y = 3
     @count = 0
   end
 
