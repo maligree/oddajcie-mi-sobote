@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require "bundler/setup"
+require 'bundler/setup'
 require 'gaminator'
 
 require_relative 'player'
@@ -24,17 +24,19 @@ class Encounter
   def initialize(width, height)
     @width = width
     @height = height
-    @player = Player.new(5, 5)
+    @player = Player.new(self, 5, 5)
     @wait = false
     @monsters = [
         Monster.new(self, 20, 20, 400),
+        Monster.new(self, 24, 29, 400),
+        Monster.new(self, 50, 30, 400),
         Minion.new(self, 23, 16, 80),
     ]
     @events = []
     @message = Message.new 'GO, GO, MURDER.', 15
     @marker = OrientationMarker.new
     @bloodhits = []
-    @killcount = Killcount.new
+    @killcount = Killcount.new self
 
   end
 

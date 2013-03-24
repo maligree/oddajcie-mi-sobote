@@ -1,4 +1,6 @@
 class Minion < Monster
+  @exp_value = 2
+
   def char
     '&'
   end

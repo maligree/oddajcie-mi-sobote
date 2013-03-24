@@ -12,6 +12,7 @@ class Monster
     @x_pos = x_pos
     @y_pos = y_pos
     @was_alive = true
+    @exp_value = 15
   end
 
   def char
@@ -71,6 +72,7 @@ class Monster
     if dead? and @was_alive
       @was_alive = false
       @context.killcount.inc
+      @context.player.give_experience @exp_value
     end
     #try_to_spawn_a_minion
   end

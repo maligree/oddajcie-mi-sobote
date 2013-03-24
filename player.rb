@@ -4,13 +4,18 @@ class Player
   attr_accessor :y_pos
   attr_reader :orientation
   attr_reader :char
+  attr_reader :experience
+  attr_reader :level
 
-  def initialize(x_pos, y_pos)
+  def initialize(context, x_pos, y_pos)
+    @context = context
     @x_pos = x_pos
     @y_pos = y_pos
     @hitpoints = 500
     @orientation = 0
     @char = 'O'
+    @level = 1
+    @experience = 0
   end
 
   def tick
@@ -27,6 +32,23 @@ class Player
   def rotate_right
     @orientation = (@orientation + 1) % 4
   end
+
+  def give_experience(n)
+    @experience += n
+    if @experience >= exp_value(@level + 1)
+      @context.message = Message.new("You advanced to level #{@level+1}!", 10)
+      @level += 1
+    end
+  end
+
+  def exp_value(n)
+    if n == 2
+      100
+    else
+      (100 * (1.1**(@level-1))).floor + exp_value(n - 1)
+    end
+  end
+
 end
 
 class OrientationMarker
