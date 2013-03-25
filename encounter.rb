@@ -54,6 +54,10 @@ class Encounter
       m.tick
     end
 
+    @monsters.delete_if do |m|
+      m.corpse_decay == 0
+    end
+
     @marker.update(@player.x_pos, @player.y_pos, @player.orientation)
 
     @bloodhits.each do |b|
@@ -73,6 +77,8 @@ class Encounter
       @monsters << Monster.new(self, rand(50), rand(50), rand(700))
     end
 
+    @player.tick
+
   end
 
   def exit_message
@@ -91,9 +97,8 @@ class Encounter
     if @message.relevant?
       @message.text
     else
-      "Player at (#{@player.x_pos}, #{@player.y_pos}). " \
-      "Hitpoints: #{@player.hitpoints}; " \
-      "Orientation: #{@player.orientation}."
+      "HP: #{@player.hitpoints} " \
+      "MP: #{@player.mana} " \
     end
   end
 
@@ -154,18 +159,24 @@ class Encounter
   end
 
   def debug_beam
-    @events << SmallBeam.new(self, @player.x_pos, @player.y_pos, @player.orientation)
+    if @player.mana >= 35
+      @events << SmallBeam.new(self, @player.x_pos, @player.y_pos, @player.orientation)
+      @player.mana -= 35
+    else
+      @message = Message.new("You don't have enough mana!", 10)
+    end
+
   end
 
   def hacky_restart
-    @player = Player.new(5, 5)
+    @player = Player.new(self, 5, 5)
     @wait = false
     @monsters = [
         Monster.new(self, 20, 20, 400),
         Minion.new(self, 23, 16, 80),
     ]
     @events = []
-    @message = Message.new 'GO, GO, MURDER.', 15
+    @message = Message.new 'GO, GO, MURDER.', 5
     @marker = OrientationMarker.new
     @bloodhits = []
   end

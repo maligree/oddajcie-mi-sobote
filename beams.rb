@@ -62,12 +62,12 @@ class SmallBeam
 
     # see if he hit something
     if @ttl == 4
-      damage = rand(100)
+      damage = 10 + @context.player.level*2 + rand(30 * (1.2**@context.player.level))
       @context.monsters.each do |m|
         if @orientation == 0 or @orientation == 2
           if m.y_pos.between?(@y, @y+9) and m.x_pos == @x
             unless m.dead?
-              @context.message = Message.new 'You hit!', 30
+              @context.message = Message.new "You hit for #{damage} points.", 7
               @context.bloodhits << Bloodhit.new(m.x_pos + 3, m.y_pos + 2, damage)
               m.hurt(damage)
             end
@@ -75,8 +75,8 @@ class SmallBeam
         elsif @orientation == 1 or @orientation == 3
           if m.x_pos.between?(@x, @x+9) and m.y_pos == @y
             unless m.dead?
-              @context.message = Message.new 'Blood!', 30
-              @context.bloodhits << Bloodhit.new(m.x_pos, m.y_pos, damage)
+              @context.message = Message.new "You hit for #{damage} points.", 7
+              @context.bloodhits << Bloodhit.new(m.x_pos+2, m.y_pos+2, damage)
               m.hurt(damage)
             end
           end

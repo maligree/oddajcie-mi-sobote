@@ -6,6 +6,7 @@ class Player
   attr_reader :char
   attr_reader :experience
   attr_reader :level
+  attr_accessor :mana
 
   def initialize(context, x_pos, y_pos)
     @context = context
@@ -16,10 +17,11 @@ class Player
     @char = 'O'
     @level = 1
     @experience = 0
+    @mana = 700
   end
 
   def tick
-
+    @mana += 1
   end
 
   alias x x_pos

@@ -4,6 +4,7 @@ class Monster
   attr_reader :starting_hitpoints
   attr_accessor :x_pos
   attr_accessor :y_pos
+  attr_reader :corpse_decay
 
   def initialize(context, x_pos, y_pos, hitpoints)
     @context = context
@@ -13,6 +14,7 @@ class Monster
     @y_pos = y_pos
     @was_alive = true
     @exp_value = 15
+    @corpse_decay = 30
   end
 
   def char
@@ -68,11 +70,14 @@ class Monster
       if rand(3) == 0
         make_a_move @context.player.x_pos, @context.player.y_pos
       end
-    end
-    if dead? and @was_alive
-      @was_alive = false
-      @context.killcount.inc
-      @context.player.give_experience @exp_value
+    else
+      if @was_alive
+        @was_alive = false
+        @context.killcount.inc
+        @context.player.give_experience @exp_value
+      else
+        @corpse_decay -= 1
+      end
     end
     #try_to_spawn_a_minion
   end
