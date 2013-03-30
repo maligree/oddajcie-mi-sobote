@@ -47,9 +47,28 @@ class TinyExplosion
 
   def tick
     unless done?
+      if @ttl == 5
+        damage = 2 + @context.player.level*2 + rand(30 * (1.2**@context.player.level))
+        @context.monsters.each do |m|
+          if m.x_pos.between?(@x, @x+2) and m.y_pos == @y+1
+            unless m.dead?
+              @context.message = Message.new "You hit for #{damage} points.", 7
+              @context.bloodhits << Bloodhit.new(m.x_pos + 3, m.y_pos + 2, damage)
+              m.hurt(damage)
+            end
+          elsif m.y_pos.between?(@y, @y+2) and m.x_pos == @x+1
+            unless m.dead?
+              @context.message = Message.new "You hit for #{damage} points.", 7
+              @context.bloodhits << Bloodhit.new(m.x_pos + 3, m.y_pos + 2, damage)
+              m.hurt(damage)
+            end
+          end
+        end
+      end
       @ttl -= 1
       @texture = @phases[@ttl]
     end
+
   end
 
   def done?

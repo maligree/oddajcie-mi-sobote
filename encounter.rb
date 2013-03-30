@@ -73,7 +73,7 @@ class Encounter
       @battlelist << BattlelistEntry.new(m.char, m, i)
     end
 
-    if rand(30) == 0
+    if rand(1000) == 0
       @monsters << Monster.new(self, rand(50), rand(50), rand(700))
     end
 
@@ -115,9 +115,9 @@ class Encounter
       ?/ => :fuck_this,
       ?q => :rotate_left,
       ?e => :rotate_right,
-      ?0 => :debug_cause_tiny_explosion,
+      ?8 => :cast_explosion,
       ?9 => :debug_cause_reasonable_explosion,
-      ?7 => :debug_beam,
+      ?7 => :cast_beam,
       ?r => :hacky_restart,
     }
   end
@@ -150,22 +150,40 @@ class Encounter
     exit
   end
 
-  def debug_cause_tiny_explosion
-    @events << TinyExplosion.new(self, rand(80), rand(30))
-  end
-
   def debug_cause_reasonable_explosion
     @events << ReasonableExplosion.new(self, rand(80), rand(30))
   end
 
-  def debug_beam
+  def cast_beam
     if @player.mana >= 35
       @events << SmallBeam.new(self, @player.x_pos, @player.y_pos, @player.orientation)
       @player.mana -= 35
     else
       @message = Message.new("You don't have enough mana!", 10)
     end
+  end
 
+  def cast_explosion
+    if @player.mana >= 25
+      case @player.orientation
+        when 0
+          y = @player.y_pos - 6 + rand(3)
+          x = @player.x_pos - 2 + rand(3)
+        when 1
+          x = @player.x_pos + 2 + rand(3)
+          y = @player.y_pos - 2 + rand(3)
+        when 2
+          x = @player.x_pos - 2 + rand(3)
+          y = @player.y_pos + 2 + rand(3)
+        when 3
+          x = @player.x_pos - 6 + rand(3)
+          y = @player.y_pos - 2 + rand(3)
+      end
+      @events << TinyExplosion.new(self, x, y)
+      @player.mana -= 25
+    else
+      @message = Message.new("You don't have enough mana!", 10)
+    end
   end
 
   def hacky_restart
